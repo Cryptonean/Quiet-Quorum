@@ -64,9 +64,9 @@ export function createPrivateState(bundle: WitnessBundle): VotingPrivateState {
   };
 }
 
-export function emptyPrivateState(administratorSecret = new Uint8Array(32)): VotingPrivateState {
+export function emptyPrivateState(administratorSecret: Uint8Array = new Uint8Array(32)): VotingPrivateState {
   return createPrivateState({
-    administratorSecret,
+    administratorSecret: Uint8Array.from(administratorSecret),
     voterSecret: new Uint8Array(32),
     leafSalt: new Uint8Array(32),
     pathSiblings: Array.from({ length: TREE_DEPTH }, () => new Uint8Array(32)),

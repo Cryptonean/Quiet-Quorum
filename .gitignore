@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+.env
+frontend/.env
+frontend/src/generated/
+frontend/public/keys/*.prover
+contract/managed/keys/*.prover
+*.log
+._*
+.DS_Store
+._*

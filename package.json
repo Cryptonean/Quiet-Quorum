@@ -19,6 +19,6 @@
     "test": "pnpm --filter @dao-voting/frontend test && pnpm --filter @dao-voting/contract test",
     "test:watch": "pnpm --filter @dao-voting/frontend test:watch",
     "build:zk": "pnpm --filter @dao-voting/contract build:zk",
-    "ci": "pnpm sync:generated && pnpm typecheck && pnpm test && pnpm build"
+    "verify": "pnpm sync:generated && pnpm typecheck && pnpm test && pnpm build"
   }
 }

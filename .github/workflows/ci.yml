@@ -26,14 +26,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Sync generated Compact bindings
-        run: bash scripts/sync-generated.sh
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Test
-        run: pnpm test
-
-      - name: Build frontend
-        run: pnpm build
+      - name: Verify typecheck, tests, and build
+        run: pnpm verify

@@ -1,0 +1,1 @@
+# Prover keys are gitignored (*.prover). Sync with: pnpm build:zk or pnpm sync:generated

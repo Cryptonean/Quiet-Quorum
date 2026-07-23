@@ -16,6 +16,11 @@ fi
 mkdir -p "$DEST" "$PUBLIC_DEST/keys" "$PUBLIC_DEST/zkir"
 cp "$SRC/index.js" "$DEST/index.js"
 cp "$SRC/index.d.ts" "$DEST/index.d.ts"
+# Compact emits a sourceMappingURL for a map that is not published; strip it for Vite/Vitest.
+if grep -q 'sourceMappingURL' "$DEST/index.js"; then
+  sed -i.bak '/sourceMappingURL/d' "$DEST/index.js"
+  rm -f "$DEST/index.js.bak"
+fi
 
 if [[ -d "$PUBLIC_SRC_KEYS" ]]; then
   cp -f "$PUBLIC_SRC_KEYS/"*.verifier "$PUBLIC_DEST/keys/" 2>/dev/null || true

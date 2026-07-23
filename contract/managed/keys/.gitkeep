@@ -1,0 +1,1 @@
+# Prover keys are gitignored (*.prover). Regenerate with: pnpm build:zk

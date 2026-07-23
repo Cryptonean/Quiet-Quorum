@@ -28,15 +28,14 @@ Build a **Midnight Preprod browser dApp** for confidential DAO governance:
 
 **Category:** Identity / credentials (private eligibility credential + anonymous participation).
 
-**Hackathon framing (Levels 4–6):**
+**Hackathon framing (Level 4 Core MVP first):**
 
-| Level | Focus |
+| Scope | Focus |
 |---|---|
-| 4 | Idea + design + scaffold (largely done) |
-| 5 | Working core: membership + nullifier + equal vote + tally + quorum + demo |
-| 6 | Advanced: weighted, multi-issuer, proposal rules, auditor disclosure, optional delegation |
+| Level 4 Core MVP | Working product: membership + nullifier + equal vote + tally + quorum + Preprod demo + CI/docs |
+| Later / Advanced | Weighted, multi-issuer, proposal rules, auditor disclosure, optional delegation |
 
-Judges reward a **complete, honest, privacy-correct demo** more than half-built advanced features. Ship Core first.
+Judges reward a **complete, honest, privacy-correct demo** more than half-built advanced features. Ship Core first. All Core MVP requirements in this brief are Level 4 work.
 
 ---
 
@@ -89,7 +88,7 @@ Do **not** claim private weighted tallies via `Counter.increment(weight)` — th
 
 Do **not** treat Compact `disclose()` as auditor-only encryption — disclosed values are public. Auditor privacy needs off-chain encrypted bundles + on-chain digest anchor.
 
-### Phase B — Level 5 Core product (priority)
+### Phase B — Level 4 Core product (priority)
 
 Implement end-to-end:
 
@@ -131,7 +130,7 @@ Implement end-to-end:
    - README privacy model + CI
    - Short demo script (connect → vote → refresh tally)
 
-### Phase C — Level 6 Advanced (after Core works on Preprod)
+### Phase C — Advanced (after Core works on Preprod)
 
 | Feature | Build notes |
 |---|---|
@@ -220,28 +219,25 @@ Duplicate → assert `"nullifier spent"`.
 
 ---
 
-## 6. Target TypeScript layout
+## 6. Target repository layout
 
 ```text
-src/
-  wallet/                 # keep; harden as needed
-  providers/              # keep; circuit keys must match Compact exports
-  browser-circuit/        # ADD: canonical hash, voter tree, witnesses
-  voting/
-    types.ts              # exists
-    quorum.ts             # exists
-    nullifier.ts          # exists — align with Compact hash when wiring
-    proposalState.ts      # exists
-    DaoVotingClient.ts    # replace stubs with real deploy/join/callTx
-    eligibility.ts        # ADD
-    tally.ts              # ADD if needed
-  hooks/
-    useWalletSession.ts   # exists
-    useVotingSession.ts   # ADD
-  components/             # ADD: WalletBar, ProposalPanel, VotePanel, PrivacyPanel
-  App.tsx                 # wire real session
-compact/dao-voting.compact
-docs/                     # update when architecture decisions change
+contract/
+  src/dao-voting.compact
+  managed/{keys,zkir,contract}
+  test/
+frontend/
+  src/
+    wallet/
+    providers/
+    browser-circuit/      # canonical hash, voter tree, witnesses
+    voting/               # quorum, nullifier, eligibility, DaoVotingClient, errors
+    hooks/                # useWalletSession, useVotingSession
+    components/           # WalletBar, Admin, Proposal, Vote, Tally, Privacy
+    App.tsx
+  public/{keys,zkir}
+docs/
+.github/workflows/ci.yml
 ```
 
 ---
@@ -263,7 +259,7 @@ Never log voter secrets, paths, or ballot choices.
 
 ---
 
-## 8. Definition of done for Level 5 (Core)
+## 8. Definition of done for Level 4 (Core MVP)
 
 - [ ] Compact contract with membership + nullifier + Yes/No/Abstain + finalize/quorum compiles via `pnpm build:zk`
 - [ ] Browser can connect Lace or 1AM on Preprod
@@ -278,7 +274,7 @@ Never log voter secrets, paths, or ballot choices.
 
 ---
 
-## 9. Definition of done for Level 6 (Advanced)
+## 9. Definition of done for Advanced follow-ons
 
 - [ ] At least two of: weighted (safe mode), multi-issuer, proposal-specific rules, auditor bundle
 - [ ] Delegation only if Core nullifiers are solid; single-level only
@@ -332,7 +328,7 @@ Treat these as true unless a mechanical compile/runtime test contradicts them:
 7. Build `useVotingSession` + replace demo UI with real flow.
 8. Expand tests; run `pnpm test && pnpm typecheck && pnpm build`.
 9. Preprod smoke: deploy → open proposal → vote → double-vote fails → finalize.
-10. Update README status from “scaffold” to “Level 5 core demo”.
+10. Update README status from “scaffold” to “Level 4 core demo”.
 
 ---
 

@@ -1,22 +1,45 @@
 # Private DAO Voting on Midnight
 
-Anonymous, credential-gated DAO ballots with a publicly verifiable result.
+Anonymous, credential-gated DAO ballots with a publicly verifiable result on **Midnight Preprod**.
 
-Eligible members prove membership without revealing their identity, cast Yes / No / Abstain, and consume a proposal-specific nullifier that prevents double voting. The product roadmap adds quorum, weighted voting, proposal-specific eligibility, multiple credential issuers, selective auditor disclosure, and constrained single-level delegation.
+Eligible members prove membership without revealing their identity, cast Yes / No / Abstain, and consume a proposal-specific nullifier that prevents double voting. Observers can verify proposal rules, aggregate tallies, and quorum outcomes without learning who voted or how any individual voted.
 
-## Current status
+[![CI](https://github.com/OWNER/private-dao-voting-midnight/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/private-dao-voting-midnight/actions/workflows/ci.yml)
 
-This repository is the standalone Level 4 project scaffold.
+> Replace `OWNER` in the badge URL after the repository is published.
 
-- Agent handoff / next build plan: [docs/AGENT_BUILD_BRIEF.md](docs/AGENT_BUILD_BRIEF.md)
-- Detailed architecture: [docs/DESIGN.md](docs/DESIGN.md)
-- User and contract flows: [docs/FLOWS.md](docs/FLOWS.md)
-- Error/recovery model: [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md)
-- Browser shell with Lace/1AM detection and provider wiring
-- Pure TypeScript quorum, nullifier-preimage, and proposal-state tests
-- Compact nullifier-`Set` verification contract
+## Current status (Level 4 MVP)
 
-The current Compact file is a **verification spike**, not the final voting contract. It confirms proposal-scoped nullifier consumption first. Membership, private ballot branching, nested proposal state, weighted voting, multi-issuer rules, auditor encryption, and delegation are implemented incrementally after their documented verification gates pass.
+This repository implements the Level 4 Core MVP:
+
+- Compact contract with membership + nullifier + Yes/No/Abstain + finalize/quorum
+- Browser dApp with Lace/1AM connect, deploy/join, admin flows, and private vote proving
+- Privacy model documented below and in the UI Privacy panel
+- CI workflow that typechecks, tests, and builds on every push
+- Workspace layout: `contract/`, `frontend/`, `docs/`, `.github/`
+
+Still owned by the operator before submission packaging:
+
+- Live Preprod contract address
+- Hosted demo URL (Netlify/Vercel)
+- Product X (Twitter) profile link
+- Demo video link
+
+## Repository layout
+
+```text
+private-dao-voting-midnight/
+├── contract/
+│   ├── src/dao-voting.compact
+│   ├── managed/{keys,zkir,contract}
+│   └── test/
+├── frontend/
+│   ├── src/{browser-circuit,components,hooks,voting,wallet,providers}
+│   └── public/{keys,zkir}
+├── docs/
+├── .github/workflows/ci.yml
+└── README.md
+```
 
 ## Development
 
@@ -24,7 +47,7 @@ Requirements:
 
 - Node.js 22+
 - pnpm 10
-- A compatible Compact CLI for `pragma language_version >= 0.23`
+- Compact CLI (`pragma language_version >= 0.23`) for regenerating ZK artifacts
 
 ```bash
 cp .env.example .env
@@ -34,37 +57,88 @@ pnpm typecheck
 pnpm dev
 ```
 
-The browser app runs at `http://localhost:5176`.
+App: `http://localhost:5176`
 
-Generate contract bindings and ZK assets:
+Regenerate Compact bindings and ZK assets after circuit changes:
 
 ```bash
 pnpm build:zk
 ```
 
+Production frontend build:
+
+```bash
+pnpm build
+```
+
+## Demo walkthrough
+
+1. Connect Lace or 1AM on Midnight Preprod.
+2. **Deploy voting contract** (admin).
+3. **Register demo voter root**.
+4. **Create and open proposal**.
+5. Select a demo voter credential and cast Yes / No / Abstain.
+6. Confirm the public tally updates.
+7. Attempt a second vote with the same credential → rejected (`NULLIFIER_SPENT`).
+8. Optionally close and finalize to publish Passed / Failed / QuorumFail.
+
 ## Privacy model
 
-Observers can learn:
+### Public ledger state
 
-- proposal rules and voting window;
-- aggregate Yes / No / Abstain totals;
-- proposal-specific spent nullifiers;
-- quorum and final result.
+- Contract address and administrator commitment
+- Accepted voter Merkle root
+- Proposal identifiers, content digests, open/close slots, quorum config
+- Aggregate Yes / No / Abstain counters
+- Proposal-specific spent nullifiers
+- Final status: Passed, Failed, QuorumFail, or Cancelled
 
-Observers cannot learn from the circuit state:
+### Private witnesses
 
-- voter identity or Merkle leaf index;
-- private membership secret and authentication path;
-- the mapping between a member and a ballot;
-- which credential issuer was used when issuer-private mode is supported.
+- Voter secret and leaf salt
+- Merkle authentication path and leaf index bits
+- Ballot choice before it is applied to a public counter branch
 
-Running-tally timing and wallet/network metadata remain outside the ZK privacy boundary. Public weighted increments can reveal weight and therefore require buckets or sealed aggregation.
+### What is disclosed, and to whom
 
-## Delivery order
+| Data | Audience | Notes |
+|---|---|---|
+| Tallies, nullifiers, proposal rules | Everyone | Required for public auditability |
+| Which counter moved / when | Everyone | Inherent to live public counters |
+| Voter identity ↔ ballot mapping | Nobody | Not present in public state |
+| Merkle path / voter secret | Prover only | Never logged or submitted in cleartext |
 
-1. Equal-weight membership + nullifier + tally
-2. Proposal lifecycle and quorum
-3. Weighted Merkle-sum voting
-4. Proposal-specific and multi-issuer eligibility
-5. Selective audit bundles
-6. Single-level delegation
+Wallet and network metadata remain outside the ZK privacy boundary.
+
+## Environment
+
+```bash
+VITE_NETWORK_ID=preprod
+# Leave unset for 1AM/ProofStation proving:
+# VITE_PROOF_SERVER_URL=
+# Local Docker proving with Lace:
+# VITE_PROOF_SERVER_URL=http://localhost:6300
+# VITE_ZK_CONFIG_BASE_URL=
+# VITE_DEFAULT_CONTRACT=
+```
+
+## Deployment artifacts
+
+| Artifact | Value |
+|---|---|
+| Preprod contract address | _pending deploy_ |
+| Live demo | _pending Netlify/Vercel publish_ |
+| CI | `.github/workflows/ci.yml` |
+| Product X profile | _pending_ |
+| Demo video | _pending_ |
+
+## Documentation
+
+- [docs/AGENT_BUILD_BRIEF.md](docs/AGENT_BUILD_BRIEF.md)
+- [docs/DESIGN.md](docs/DESIGN.md)
+- [docs/FLOWS.md](docs/FLOWS.md)
+- [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md)
+
+## Success narrative
+
+> A DAO member proves they are on the approved voter list without revealing who they are, casts a private Yes/No/Abstain, and is blocked from voting twice by a proposal-specific nullifier. Anyone can verify the public tally and quorum outcome on Midnight Preprod.

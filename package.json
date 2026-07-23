@@ -8,12 +8,17 @@
     "node": ">=22"
   },
   "scripts": {
+    "sync:generated": "bash scripts/sync-generated.sh",
+    "predev": "pnpm sync:generated",
+    "prebuild": "pnpm sync:generated",
+    "pretypecheck": "pnpm sync:generated",
+    "pretest": "pnpm sync:generated",
     "dev": "pnpm --filter @dao-voting/frontend dev",
     "build": "pnpm --filter @dao-voting/frontend build",
     "typecheck": "pnpm --filter @dao-voting/frontend typecheck",
     "test": "pnpm --filter @dao-voting/frontend test && pnpm --filter @dao-voting/contract test",
     "test:watch": "pnpm --filter @dao-voting/frontend test:watch",
     "build:zk": "pnpm --filter @dao-voting/contract build:zk",
-    "ci": "pnpm typecheck && pnpm test && pnpm build"
+    "ci": "pnpm sync:generated && pnpm typecheck && pnpm test && pnpm build"
   }
 }

@@ -335,19 +335,14 @@ If a spike fails, the architecture must change rather than moving the missing en
 
 ## 17. Delivery roadmap
 
-### Level 4
+### Level 4 Core MVP
 
-- Approved product idea
-- Standalone repository and full technical design
-- Toolchain verification spikes
-
-### Level 5
-
-- Equal-weight contract and browser MVP
+- Equal-weight Compact contract and browser dApp
 - Membership, nullifier, tally, proposal lifecycle, and quorum
-- Automated tests, CI, Preprod deployment, and live browser demo
+- Automated tests, CI, Preprod deployment, hosted demo, and documentation
+- Privacy model stating public ledger state, private witnesses, and disclosure
 
-### Level 6
+### Advanced follow-ons
 
 - Weighted voting
 - Proposal-specific eligibility

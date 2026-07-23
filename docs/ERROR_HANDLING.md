@@ -49,6 +49,8 @@ The most dangerous recovery case is a transport error after a transaction may ha
 
 ## Error mapping
 
+Implemented in `frontend/src/voting/errors.ts` as `mapVotingError()` / `VotingAppError`.
+
 Low-level wallet, provider, and Compact errors are normalized into the codes above. Known contract assertion messages map directly:
 
 - `nullifier spent` → `NULLIFIER_SPENT`

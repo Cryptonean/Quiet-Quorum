@@ -16,7 +16,7 @@ Failure handling:
 - Unsupported issuer count or rule shape is rejected by the browser and contract.
 - A failed deployment leaves no stored address.
 
-## 2. Direct voting
+## 2. Direct voting (Level 4 Core)
 
 ```mermaid
 sequenceDiagram

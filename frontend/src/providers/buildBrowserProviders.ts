@@ -16,10 +16,13 @@ import { describeLaceTxError } from '../wallet/walletReadiness';
 import { withWalletRetry } from '../wallet/walletHealth';
 
 export type VotingCircuitKeys =
-  | 'spikeConsumeNullifier'
+  | 'registerVoterRoot'
   | 'createProposal'
+  | 'openProposal'
   | 'castVote'
-  | 'finalizeProposal';
+  | 'closeProposal'
+  | 'finalizeProposal'
+  | 'cancelProposal';
 export type VotingProviders = MidnightProviders<
   VotingCircuitKeys,
   'votingState',

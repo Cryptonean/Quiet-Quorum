@@ -9,4 +9,7 @@ contract/managed/keys/*.prover
 *.log
 ._*
 .DS_Store
+
+# Compact compile cache outside the repo
+.compact-tmp/
 ._*

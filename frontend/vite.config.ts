@@ -11,10 +11,20 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 
 function zkBuildId(): string {
   try {
-    const circuit = readFileSync(
-      path.join(root, 'public/zkir/spikeConsumeNullifier.bzkir'),
-    );
-    return createHash('sha256').update(circuit).digest('hex').slice(0, 12);
+    const circuits = [
+      'registerVoterRoot',
+      'createProposal',
+      'openProposal',
+      'castVote',
+      'closeProposal',
+      'finalizeProposal',
+      'cancelProposal',
+    ];
+    const hash = createHash('sha256');
+    for (const name of circuits) {
+      hash.update(readFileSync(path.join(root, `public/zkir/${name}.bzkir`)));
+    }
+    return hash.digest('hex').slice(0, 12);
   } catch {
     return 'dev';
   }

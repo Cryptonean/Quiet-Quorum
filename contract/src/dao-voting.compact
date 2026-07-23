@@ -2,18 +2,50 @@ pragma language_version >= 0.23;
 
 import CompactStandardLibrary;
 
-// Phase 0 verification contract.
+// Level 4 Private DAO Voting — equal-weight Core MVP.
 //
-// This deliberately proves the confirmed nullifier Set pattern first. Membership,
-// private ballot branching, proposal Maps, weighted voting, and delegation are added
-// only after their focused Compact spikes pass (docs/DESIGN.md section 14).
+// Privacy boundary:
+// - Public: owner commitment, voter Merkle root, proposal rules, tallies, spent nullifiers, final status.
+// - Private: voter secret, leaf salt, Merkle path, leaf index bits.
+// - Known leak: running public counters reveal which ballot branch moved and when.
+// - proposalId is a public circuit argument (intentionally disclosed for ledger indexing).
+
+export enum ProposalStatus {
+  None,
+  Draft,
+  Active,
+  Closed,
+  Passed,
+  Failed,
+  QuorumFail,
+  Cancelled
+}
+
+export enum Ballot {
+  Yes,
+  No,
+  Abstain
+}
 
 export sealed ledger owner: Bytes<32>;
-export ledger spentNullifiers: Set<Bytes<32>>;
-export ledger acceptedVotes: Counter;
+export ledger voterRoot: Bytes<32>;
+export ledger proposalStatus: Map<Bytes<32>, ProposalStatus>;
+export ledger contentDigest: Map<Bytes<32>, Bytes<32>>;
+export ledger opensAt: Map<Bytes<32>, Uint<64>>;
+export ledger closesAt: Map<Bytes<32>, Uint<64>>;
+export ledger eligibleTotal: Map<Bytes<32>, Uint<64>>;
+export ledger quorumMinimum: Map<Bytes<32>, Uint<64>>;
+export ledger yesVotes: Map<Bytes<32>, Counter>;
+export ledger noVotes: Map<Bytes<32>, Counter>;
+export ledger abstainVotes: Map<Bytes<32>, Counter>;
+export ledger spentNullifiers: Map<Bytes<32>, Set<Bytes<32>>>;
 
 witness administratorSecret(): Bytes<32>;
 witness voterSecret(): Bytes<32>;
+witness leafSalt(): Bytes<32>;
+witness pathSiblings(): Vector<3, Bytes<32>>;
+witness pathBits(): Vector<3, Boolean>;
+witness ballotChoice(): Ballot;
 
 circuit ownerKey(secret: Bytes<32>): Bytes<32> {
   return persistentHash<Vector<2, Bytes<32>>>(
@@ -27,17 +59,163 @@ circuit voteNullifier(secret: Bytes<32>, proposalId: Bytes<32>): Bytes<32> {
   );
 }
 
-constructor() {
-  owner = disclose(ownerKey(administratorSecret()));
+circuit leafCommit(secret: Bytes<32>, salt: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "dao-vote:leaf:v1"), secret, salt]
+  );
 }
 
-// Mechanical spike: prove proposal-scoped nullifiers can be checked and consumed.
-// This is not the final castVote circuit because it does not yet prove membership or
-// apply a private Yes / No / Abstain branch.
-export circuit spikeConsumeNullifier(proposalId: Bytes<32>): Boolean {
-  const nullifier = disclose(voteNullifier(voterSecret(), proposalId));
-  assert(!spentNullifiers.member(nullifier), "nullifier spent");
-  spentNullifiers.insert(nullifier);
-  acceptedVotes.increment(1);
-  return true;
+circuit nodeHash(left: Bytes<32>, right: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "dao-vote:node:v1"), left, right]
+  );
+}
+
+circuit mixPath(goesRight: Boolean, current: Bytes<32>, sibling: Bytes<32>): Bytes<32> {
+  if (goesRight) {
+    return nodeHash(sibling, current);
+  } else {
+    return nodeHash(current, sibling);
+  }
+}
+
+circuit membershipRoot(
+  secret: Bytes<32>,
+  salt: Bytes<32>,
+  siblings: Vector<3, Bytes<32>>,
+  bits: Vector<3, Boolean>
+): Bytes<32> {
+  const leaf = leafCommit(secret, salt);
+  const level0 = mixPath(bits[0], leaf, siblings[0]);
+  const level1 = mixPath(bits[1], level0, siblings[1]);
+  return mixPath(bits[2], level1, siblings[2]);
+}
+
+constructor() {
+  owner = disclose(ownerKey(administratorSecret()));
+  voterRoot = pad(32, "");
+}
+
+export circuit registerVoterRoot(root: Bytes<32>): [] {
+  assert(disclose(ownerKey(administratorSecret()) == owner), "not admin");
+  voterRoot = disclose(root);
+}
+
+export circuit createProposal(
+  proposalId: Bytes<32>,
+  digest: Bytes<32>,
+  openSlot: Uint<64>,
+  closeSlot: Uint<64>,
+  eligible: Uint<64>,
+  quorumMin: Uint<64>
+): [] {
+  assert(disclose(ownerKey(administratorSecret()) == owner), "not admin");
+  const id = disclose(proposalId);
+  assert(disclose(!proposalStatus.member(id)), "proposal exists");
+  assert(disclose(closeSlot > openSlot), "invalid window");
+  assert(disclose(eligible > 0), "eligible must be positive");
+  assert(disclose(quorumMin > 0), "quorum must be positive");
+  assert(disclose(quorumMin <= eligible), "quorum exceeds eligible");
+
+  proposalStatus.insert(id, ProposalStatus.Draft);
+  contentDigest.insert(id, disclose(digest));
+  opensAt.insert(id, disclose(openSlot));
+  closesAt.insert(id, disclose(closeSlot));
+  eligibleTotal.insert(id, disclose(eligible));
+  quorumMinimum.insert(id, disclose(quorumMin));
+  yesVotes.insert(id, default<Counter>);
+  noVotes.insert(id, default<Counter>);
+  abstainVotes.insert(id, default<Counter>);
+  spentNullifiers.insert(id, default<Set<Bytes<32>>>);
+}
+
+export circuit openProposal(proposalId: Bytes<32>): [] {
+  assert(disclose(ownerKey(administratorSecret()) == owner), "not admin");
+  const id = disclose(proposalId);
+  assert(disclose(proposalStatus.member(id)), "proposal missing");
+  assert(
+    disclose(proposalStatus.lookup(id) == ProposalStatus.Draft),
+    "proposal not draft"
+  );
+  proposalStatus.insert(id, ProposalStatus.Active);
+}
+
+export circuit castVote(proposalId: Bytes<32>, slot: Uint<64>): [] {
+  const id = disclose(proposalId);
+  const now = disclose(slot);
+  assert(disclose(proposalStatus.member(id)), "proposal missing");
+  assert(
+    disclose(proposalStatus.lookup(id) == ProposalStatus.Active),
+    "proposal not active"
+  );
+  assert(disclose(now >= opensAt.lookup(id)), "voting not open");
+  assert(disclose(now < closesAt.lookup(id)), "voting closed");
+
+  const secret = voterSecret();
+  const salt = leafSalt();
+  const siblings = pathSiblings();
+  const bits = pathBits();
+  const computedRoot = membershipRoot(secret, salt, siblings, bits);
+  assert(disclose(computedRoot == voterRoot), "not eligible");
+
+  const nullifier = disclose(voteNullifier(secret, id));
+  assert(!spentNullifiers.lookup(id).member(nullifier), "nullifier spent");
+  spentNullifiers.lookup(id).insert(nullifier);
+
+  const choice = disclose(ballotChoice());
+  if (choice == Ballot.Yes) {
+    yesVotes.lookup(id).increment(1);
+  } else if (choice == Ballot.No) {
+    noVotes.lookup(id).increment(1);
+  } else {
+    assert(choice == Ballot.Abstain, "invalid ballot");
+    abstainVotes.lookup(id).increment(1);
+  }
+}
+
+export circuit closeProposal(proposalId: Bytes<32>, slot: Uint<64>): [] {
+  const id = disclose(proposalId);
+  const now = disclose(slot);
+  assert(disclose(proposalStatus.member(id)), "proposal missing");
+  assert(
+    disclose(proposalStatus.lookup(id) == ProposalStatus.Active),
+    "proposal not active"
+  );
+  assert(disclose(now >= closesAt.lookup(id)), "voting still open");
+  proposalStatus.insert(id, ProposalStatus.Closed);
+}
+
+export circuit finalizeProposal(proposalId: Bytes<32>): [] {
+  const id = disclose(proposalId);
+  assert(disclose(proposalStatus.member(id)), "proposal missing");
+  assert(
+    disclose(proposalStatus.lookup(id) == ProposalStatus.Closed),
+    "proposal not closed"
+  );
+
+  const yes = yesVotes.lookup(id);
+  const no = noVotes.lookup(id);
+  const abstain = abstainVotes.lookup(id);
+  const participation = yes + no + abstain;
+  const quorumMin = quorumMinimum.lookup(id);
+
+  if (disclose(participation < quorumMin)) {
+    proposalStatus.insert(id, ProposalStatus.QuorumFail);
+  } else if (disclose(yes > no)) {
+    proposalStatus.insert(id, ProposalStatus.Passed);
+  } else {
+    proposalStatus.insert(id, ProposalStatus.Failed);
+  }
+}
+
+export circuit cancelProposal(proposalId: Bytes<32>): [] {
+  assert(disclose(ownerKey(administratorSecret()) == owner), "not admin");
+  const id = disclose(proposalId);
+  assert(disclose(proposalStatus.member(id)), "proposal missing");
+  const status = proposalStatus.lookup(id);
+  assert(
+    disclose(status == ProposalStatus.Draft || status == ProposalStatus.Active),
+    "cannot cancel"
+  );
+  proposalStatus.insert(id, ProposalStatus.Cancelled);
 }

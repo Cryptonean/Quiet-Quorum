@@ -41,29 +41,28 @@ Judges reward a **complete, honest, privacy-correct demo** more than half-built 
 
 ## 2. What is already built (do not redo)
 
-Standalone repo already exists and validates:
+Standalone Level 4 workspace exists and validates:
 
 | Area | Status | Paths |
 |---|---|---|
-| Project scaffold | Done | root `package.json`, Vite, Vitest, Netlify, `.env.example` |
-| Design docs | Done | `docs/DESIGN.md`, `FLOWS.md`, `ERROR_HANDLING.md` |
-| Wallet connect (Lace/1AM) | Done (adapted from por-browser) | `src/wallet/*`, `src/hooks/useWalletSession.ts` |
-| Midnight providers | Done | `src/providers/buildBrowserProviders.ts` |
-| UI shell | Done (demo, not live vote) | `src/App.tsx`, `src/styles.css` |
-| Quorum / lifecycle / nullifier preimage TS | Done + tests | `src/voting/{quorum,proposalState,nullifier}*.ts` |
-| Client boundary stub | Done | `src/voting/DaoVotingClient.ts` |
-| Contract storage helper | Done | `src/contractStorage.ts` |
-| Compact nullifier spike | Compiled successfully | `compact/dao-voting.compact` → `spikeConsumeNullifier` |
-| Generated bindings / ZK assets | Generated via `pnpm build:zk` | `src/generated/`, `public/keys/`, `public/zkir/` |
+| Workspace scaffold | Done | `contract/`, `frontend/`, root pnpm workspace, Netlify, CI |
+| Design docs | Done | `docs/DESIGN.md`, `FLOWS.md`, `ERROR_HANDLING.md`, `DEMO_SCRIPT.md` |
+| Wallet connect (Lace/1AM) | Done | `frontend/src/wallet/*`, `useWalletSession.ts` |
+| Midnight providers | Done | `frontend/src/providers/buildBrowserProviders.ts` |
+| Compact Core MVP | Done + compiled | `contract/src/dao-voting.compact` (7 circuits) |
+| Browser circuit | Done + tests | `frontend/src/browser-circuit/*` |
+| DaoVotingClient | Done | deploy/join/register/create/open/cast/close/finalize |
+| Voting session + UI | Done | `useVotingSession`, Admin/Vote/Tally/Privacy panels |
+| Generated bindings / ZK assets | Done | `contract/managed/`, synced to `frontend/public` |
 
 Verified locally:
 
-- `pnpm test` → 8 tests pass
+- `pnpm test` → unit suites green
 - `pnpm typecheck` → clean
 - `pnpm build` → Vite production build succeeds
-- `pnpm build:zk` → Compact spike compiles
+- `pnpm build:zk` → Compact Core MVP compiles
 
-**Important:** The Compact file is a **spike**, not the final voting contract. The UI vote button is intentionally blocked until membership + private ballot circuits exist.
+Operator-owned remaining items: live Preprod address, hosted demo URL, X profile, demo video.
 
 ---
 

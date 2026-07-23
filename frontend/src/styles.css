@@ -205,6 +205,43 @@ li {
   margin-bottom: 0.55rem;
 }
 
+.stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: #a7c3b8;
+  font-size: 0.9rem;
+}
+
+input {
+  color: inherit;
+  background: #10241e;
+  border: 1px solid #315c4d;
+  border-radius: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  width: 100%;
+}
+
+.proposal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.proposal-list .choice {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: none;
+}
+
 @media (max-width: 760px) {
   .app {
     padding: 1rem;

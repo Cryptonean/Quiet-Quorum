@@ -11,8 +11,9 @@ import type {
   PrivateStateProvider,
   SigningKeyExport,
 } from '@midnight-ntwrk/midnight-js-types';
+import type { VotingPrivateState } from './browser-circuit/witnesses.js';
 
-export type VotingPrivateState = Record<string, never>;
+export type { VotingPrivateState };
 
 export const inMemoryPrivateStateProvider = <
   PSI extends PrivateStateId = string,

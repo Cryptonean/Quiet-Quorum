@@ -1,6 +1,6 @@
 [build]
   base = "frontend"
-  command = "pnpm build"
+  command = "pnpm -w run sync:generated && pnpm build"
   publish = "dist"
 
 [build.environment]

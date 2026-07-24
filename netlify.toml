@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm --filter @dao-voting/frontend build"
+  command = "pnpm run build"
   publish = "frontend/dist"
 
 [build.environment]

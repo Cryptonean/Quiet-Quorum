@@ -1,12 +1,11 @@
-# Private DAO Voting on Midnight
+# Quiet Quorum
 
-Anonymous, credential-gated DAO ballots with a publicly verifiable result on **Midnight Preprod**.
+**Private ballots. Public certainty.** Quiet Quorum provides anonymous, credential-gated DAO
+voting with publicly verifiable results on **Midnight Preview**.
 
 Eligible members prove membership without revealing their identity, cast Yes / No / Abstain, and consume a proposal-specific nullifier that prevents double voting. Observers can verify proposal rules, aggregate tallies, and quorum outcomes without learning who voted or how any individual voted.
 
-[![CI](https://github.com/OWNER/private-dao-voting-midnight/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/private-dao-voting-midnight/actions/workflows/ci.yml)
-
-> Replace `OWNER` in the badge URL after the repository is published.
+[![CI](https://github.com/Cryptonean/Quiet-Quorum/actions/workflows/ci.yml/badge.svg)](https://github.com/Cryptonean/Quiet-Quorum/actions/workflows/ci.yml)
 
 ## Current status (Level 4 MVP)
 
@@ -20,7 +19,7 @@ This repository implements the Level 4 Core MVP:
 
 Still owned by the operator before submission packaging:
 
-- Live Preprod contract address
+- Live Preview contract address
 - Hosted demo URL (Netlify/Vercel)
 - Product X (Twitter) profile link
 - Demo video link
@@ -73,7 +72,7 @@ pnpm build
 
 ## Demo walkthrough
 
-1. Connect Lace or 1AM on Midnight Preprod.
+1. Connect Lace or 1AM on Midnight Preview.
 2. **Deploy voting contract** (admin).
 3. **Register demo voter root**.
 4. **Create and open proposal**.
@@ -113,7 +112,7 @@ Wallet and network metadata remain outside the ZK privacy boundary.
 ## Environment
 
 ```bash
-VITE_NETWORK_ID=preprod
+VITE_NETWORK_ID=preview
 # Leave unset for 1AM/ProofStation proving:
 # VITE_PROOF_SERVER_URL=
 # Local Docker proving with Lace:
@@ -126,7 +125,7 @@ VITE_NETWORK_ID=preprod
 
 | Artifact | Value |
 |---|---|
-| Preprod contract address | _pending deploy_ |
+| Preview contract address | _pending deploy_ |
 | Live demo | _pending Netlify/Vercel publish_ |
 | CI | `.github/workflows/ci.yml` |
 | Product X profile | _pending_ |
@@ -141,4 +140,4 @@ VITE_NETWORK_ID=preprod
 
 ## Success narrative
 
-> A DAO member proves they are on the approved voter list without revealing who they are, casts a private Yes/No/Abstain, and is blocked from voting twice by a proposal-specific nullifier. Anyone can verify the public tally and quorum outcome on Midnight Preprod.
+> A DAO member proves they are on the approved voter list without revealing who they are, casts a private Yes/No/Abstain, and is blocked from voting twice by a proposal-specific nullifier. Anyone can verify the public tally and quorum outcome on Midnight Preview.

@@ -18,7 +18,7 @@ Related prior work (reference only, do not merge the monorepo into this repo):
 
 ## 1. What this product is
 
-Build a **Midnight Preprod browser dApp** for confidential DAO governance:
+Build a **Midnight Preview browser dApp** for confidential DAO governance:
 
 - Registered / credentialed members cast **Yes / No / Abstain** votes.
 - Voters prove **eligibility** in zero knowledge **without revealing identity**.
@@ -32,7 +32,7 @@ Build a **Midnight Preprod browser dApp** for confidential DAO governance:
 
 | Scope | Focus |
 |---|---|
-| Level 4 Core MVP | Working product: membership + nullifier + equal vote + tally + quorum + Preprod demo + CI/docs |
+| Level 4 Core MVP | Working product: membership + nullifier + equal vote + tally + quorum + Preview demo + CI/docs |
 | Later / Advanced | Weighted, multi-issuer, proposal rules, auditor disclosure, optional delegation |
 
 Judges reward a **complete, honest, privacy-correct demo** more than half-built advanced features. Ship Core first. All Core MVP requirements in this brief are Level 4 work.
@@ -62,7 +62,7 @@ Verified locally:
 - `pnpm build` → Vite production build succeeds
 - `pnpm build:zk` → Compact Core MVP compiles
 
-Operator-owned remaining items: live Preprod address, hosted demo URL, X profile, demo video.
+Operator-owned remaining items: live Preview address, hosted demo URL, X profile, demo video.
 
 ---
 
@@ -125,11 +125,11 @@ Implement end-to-end:
    - Prefer pure TS tests first; then Compact/runtime tests when bindings allow
 
 7. **Demo artifacts**
-   - Preprod deploy smoke
+   - Preview deploy smoke
    - README privacy model + CI
    - Short demo script (connect → vote → refresh tally)
 
-### Phase C — Advanced (after Core works on Preprod)
+### Phase C — Advanced (after Core works on Preview)
 
 | Feature | Build notes |
 |---|---|
@@ -165,7 +165,7 @@ Implement end-to-end:
 
 ### Product honesty
 
-- Do not mark Advanced/Stretch features as “done” until Preprod-demoable.
+- Do not mark Advanced/Stretch features as “done” until Preview-demoable.
 - UI must not imply a live ZK vote if only the spike exists.
 - Prefer a polished Core demo over incomplete multi-issuer + delegation.
 
@@ -261,7 +261,7 @@ Never log voter secrets, paths, or ballot choices.
 ## 8. Definition of done for Level 4 (Core MVP)
 
 - [ ] Compact contract with membership + nullifier + Yes/No/Abstain + finalize/quorum compiles via `pnpm build:zk`
-- [ ] Browser can connect Lace or 1AM on Preprod
+- [ ] Browser can connect Lace or 1AM on Preview
 - [ ] Admin can deploy and create/open a proposal
 - [ ] Eligible demo voter can cast one vote and see public tally update
 - [ ] Second vote with same credential/proposal is rejected
@@ -297,7 +297,7 @@ pnpm build
 
 Env:
 
-- `VITE_NETWORK_ID=preprod`
+- `VITE_NETWORK_ID=preview`
 - Leave `VITE_PROOF_SERVER_URL` unset for 1AM/ProofStation
 - Set `VITE_PROOF_SERVER_URL=http://localhost:6300` for local Docker proving with Lace
 
@@ -326,7 +326,7 @@ Treat these as true unless a mechanical compile/runtime test contradicts them:
 6. Wire `DaoVotingClient` deploy/join/castVote using generated bindings.
 7. Build `useVotingSession` + replace demo UI with real flow.
 8. Expand tests; run `pnpm test && pnpm typecheck && pnpm build`.
-9. Preprod smoke: deploy → open proposal → vote → double-vote fails → finalize.
+9. Preview smoke: deploy → open proposal → vote → double-vote fails → finalize.
 10. Update README status from “scaffold” to “Level 4 core demo”.
 
 ---
@@ -343,6 +343,6 @@ Treat these as true unless a mechanical compile/runtime test contradicts them:
 
 ## 14. Success narrative for demos
 
-> “A DAO member proves they are on the approved voter list without revealing who they are, casts a private Yes/No/Abstain, and is blocked from voting twice by a proposal-specific nullifier. Anyone can verify the public tally and quorum outcome on Midnight Preprod.”
+> “A DAO member proves they are on the approved voter list without revealing who they are, casts a private Yes/No/Abstain, and is blocked from voting twice by a proposal-specific nullifier. Anyone can verify the public tally and quorum outcome on Midnight Preview.”
 
 Everything you build should make that sentence true with a live browser + Lace/1AM demo.

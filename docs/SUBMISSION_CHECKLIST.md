@@ -13,7 +13,7 @@
 - [x] Lace/1AM connect/disconnect UI
 - [x] Loading / error / recovery states
 - [x] Privacy panel + README privacy model
-- [ ] Preprod contract address recorded in README
+- [ ] Preview contract address recorded in README
 - [ ] Hosted demo URL recorded in README
 - [ ] Product X profile linked in README
 - [ ] Demo video linked in README / submission form
@@ -23,4 +23,4 @@
 - [x] No cleartext ballot submission path
 - [x] Nullifier spent path never invents a replacement nullifier
 - [x] Running-tally leakage documented
-- [x] Advanced features not marked done unless Preprod-demoable
+- [x] Advanced features not marked done unless Preview-demoable

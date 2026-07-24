@@ -187,6 +187,7 @@ const ASSERT_MAP: Array<{ pattern: RegExp; code: VotingErrorCode }> = [
   { pattern: /proposal exists/i, code: 'PROPOSAL_EXISTS' },
   { pattern: /proposal missing/i, code: 'PROPOSAL_MISSING' },
   { pattern: /proposal not draft/i, code: 'PROPOSAL_NOT_ACTIVE' },
+  { pattern: /contract address not set|contract not found/i, code: 'CONTRACT_NOT_FOUND' },
   { pattern: /proposal not closed/i, code: 'PROPOSAL_NOT_ACTIVE' },
   { pattern: /wrong network|network mismatch/i, code: 'WRONG_NETWORK' },
   { pattern: /dust|insufficient funds|cannot balance/i, code: 'DUST_INSUFFICIENT' },

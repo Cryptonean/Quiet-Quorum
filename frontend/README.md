@@ -1,6 +1,6 @@
 # @dao-voting/frontend
 
-Browser dApp for Private DAO Voting on Midnight Preprod.
+Browser dApp for Private DAO Voting on Midnight Preview.
 
 ```bash
 # from repo root

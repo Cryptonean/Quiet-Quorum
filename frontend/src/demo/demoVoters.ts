@@ -17,7 +17,7 @@ export interface DemoRegistry {
   leaves: VoterLeaf[];
 }
 
-/** Deterministic demo registry for local/Preprod walkthroughs. */
+/** Deterministic demo registry for local/Preview walkthroughs. */
 export function createDemoRegistry(seed = 42): DemoRegistry {
   let state = seed >>> 0;
   const random = () => {

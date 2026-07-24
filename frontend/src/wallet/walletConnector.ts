@@ -6,8 +6,8 @@ import { pipe as fnPipe } from 'fp-ts/function';
 export const WALLET_INSTALL_STORAGE_KEY = 'dao-voting-wallet-install';
 const COMPATIBLE_CONNECTOR_API_VERSION = '4.x';
 
-/** Prefer env network, then 1AM's documented default (`preview`), then preprod. */
-const NETWORK_FALLBACKS = ['preview', 'preprod'] as const;
+/** Preview is the only supported public network for this DApp. */
+const NETWORK_FALLBACKS = ['preview'] as const;
 
 export interface DetectedWallet {
   installId: string;
@@ -62,7 +62,7 @@ function getWalletByInstallId(installId: string): InitialAPI | undefined {
 }
 
 function normalizeNetworkId(raw: string | undefined): string {
-  return (raw ?? 'preprod').trim().toLowerCase();
+  return (raw ?? 'preview').trim().toLowerCase();
 }
 
 export function isDustSponsoredWallet(wallet: Pick<DetectedWallet, 'name' | 'rdns' | 'installId'>): boolean {
@@ -116,8 +116,8 @@ function describeConnectError(error: unknown, networkId: string, wallet: Detecte
     return new Error(
       `${wallet.name} rejected the connection: network mismatch. The DApp requested "${networkId}". ` +
         (isDustSponsoredWallet(wallet)
-          ? 'In 1AM, switch network to match, or set VITE_NETWORK_ID=preview (1AM default) / preprod.'
-          : 'In the wallet, open Settings → Midnight → Configure Midnight Nodes, select Preprod, and save, then reconnect.'),
+          ? 'In 1AM, switch the network to Preview, or set VITE_NETWORK_ID=preview.'
+          : 'In the wallet, open Settings → Midnight → Configure Midnight Nodes, select Preview, and save, then reconnect.'),
     );
   }
   return error instanceof Error ? error : new Error('Wallet connection failed');

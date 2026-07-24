@@ -10,7 +10,7 @@ The project is categorized as **Identity / credentials** because its core primit
 
 ### Core
 
-- Lace and 1AM wallet connection on Midnight Preprod
+- Lace and 1AM wallet connection on Midnight Preview
 - DAO administrator creates and opens a proposal
 - Equal-weight Yes / No / Abstain ballots
 - Merkle membership proof against an approved voter root
@@ -280,7 +280,7 @@ Evidence-based status for Compact `language_version >= 0.23` and the current bro
 
 ### Remaining mechanical spikes before locking production circuits
 
-1. Nested `Map<proposalId, Set|Counter|config>` under the pinned midnight-js / Preprod runtime
+1. Nested `Map<proposalId, Set|Counter|config>` under the pinned midnight-js / Preview runtime
 2. Equal-weight private ballot → public counter branch without unintended disclosure
 3. Multi-issuer membership that does not fingerprint the issuer via a disclosed root
 4. Browser prover size for membership + nullifier + tally; target below the deployment asset limit
@@ -330,7 +330,7 @@ If a spike fails, the architecture must change rather than moving the missing en
 - Compile generated bindings and ZK assets locally before deployment.
 - Fingerprint ZKIR and bind stored contract addresses to that build identifier.
 - Serve verifier/prover/ZKIR files as binary assets with explicit CORS and content types.
-- Run unit tests, type checking, asset verification, and a Preprod smoke test in CI.
+- Run unit tests, type checking, asset verification, and a Preview smoke test in CI.
 - Logs may include step names, transaction IDs, block heights, and public proposal IDs. Never log voter secrets, witness paths, ballot choices, or decrypted audit bundles.
 
 ## 17. Delivery roadmap
@@ -339,7 +339,7 @@ If a spike fails, the architecture must change rather than moving the missing en
 
 - Equal-weight Compact contract and browser dApp
 - Membership, nullifier, tally, proposal lifecycle, and quorum
-- Automated tests, CI, Preprod deployment, hosted demo, and documentation
+- Automated tests, CI, Preview deployment, hosted demo, and documentation
 - Privacy model stating public ledger state, private witnesses, and disclosure
 
 ### Advanced follow-ons

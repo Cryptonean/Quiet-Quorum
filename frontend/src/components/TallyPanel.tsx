@@ -10,12 +10,13 @@ export function TallyPanel({ session }: { session: Session }) {
     : null;
 
   return (
-    <section className="card tally-panel">
+    <section className="card tally-panel" aria-labelledby="tally-panel-heading">
+      <span className="card-stage" aria-hidden="true">05 / Public result</span>
       <p className="eyebrow">Public result</p>
-      <h2>Running tally</h2>
+      <h2 id="tally-panel-heading">Running tally</h2>
       {proposal ? (
         <>
-          <dl className="tally">
+          <dl className="tally" aria-label="Running tally">
             <div>
               <dt>Yes</dt>
               <dd>{proposal.tallies.yes.toString()}</dd>
@@ -31,7 +32,8 @@ export function TallyPanel({ session }: { session: Session }) {
           </dl>
           <p>
             Participation: {quorum?.participation.toString()} / {proposal.eligibleTotal.toString()} ·
-            Quorum {quorum?.met ? 'met' : 'not met'} · Status {proposal.status}
+            Quorum {quorum?.met ? 'met' : 'not met'}
+            {quorum?.met ? <span aria-hidden="true"> ✓</span> : ''} · Status {proposal.status}
           </p>
           <p className="banner banner--warning">
             Running tallies reveal which counter moved and when. They do not reveal voter identity.

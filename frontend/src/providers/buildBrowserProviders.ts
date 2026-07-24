@@ -61,7 +61,7 @@ export async function buildBrowserProviders(
   connectedNetworkId?: string,
 ): Promise<VotingProviders> {
   const config = await connectedAPI.getConfiguration();
-  const envNetwork = (import.meta.env.VITE_NETWORK_ID ?? 'preprod').trim().toLowerCase();
+  const envNetwork = (import.meta.env.VITE_NETWORK_ID ?? 'preview').trim().toLowerCase();
   const walletNetwork = (config.networkId ?? connectedNetworkId ?? envNetwork).trim().toLowerCase();
   const expectedNetwork = (connectedNetworkId ?? envNetwork).trim().toLowerCase();
 

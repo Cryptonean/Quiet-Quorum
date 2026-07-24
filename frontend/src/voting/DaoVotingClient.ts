@@ -125,8 +125,10 @@ export class DaoVotingClient {
   async deploy(): Promise<DeployResult> {
     try {
       const initial = createPrivateState(this.adminBundle());
-      await this.writePrivateState(initial);
+      // Do not write private state before deploy — the address does not exist yet.
+      // deployContract persists initialPrivateState after the address is known.
       const compiledContract = buildCompiledContract();
+      console.info('[dao-voting] deploying voting contract…');
       const deployed = await withTimeout(
         deployContract(this.providers as never, {
           compiledContract,
@@ -139,6 +141,9 @@ export class DaoVotingClient {
 
       this.deployed = deployed;
       this.contractAddress = deployed.deployTxData.public.contractAddress as string;
+      this.providers.privateStateProvider.setContractAddress(this.contractAddress);
+      await this.writePrivateState(initial);
+      console.info(`[dao-voting] deployed at ${this.contractAddress}`);
       return {
         contractAddress: this.contractAddress,
         deployTxId: deployed.deployTxData.public.txId as string,
@@ -153,8 +158,10 @@ export class DaoVotingClient {
   async join(contractAddress: string): Promise<DeployResult> {
     try {
       const initial = emptyPrivateState(this.administratorSecret);
+      this.providers.privateStateProvider.setContractAddress(contractAddress);
       await this.writePrivateState(initial);
       const compiledContract = buildCompiledContract();
+      console.info(`[dao-voting] joining contract ${contractAddress}…`);
       const deployed = await withTimeout(
         findDeployedContract(this.providers as never, {
           contractAddress,

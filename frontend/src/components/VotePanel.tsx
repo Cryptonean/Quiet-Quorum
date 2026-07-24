@@ -15,14 +15,22 @@ export function VotePanel({ session }: { session: Session }) {
     proposal?.status === 'active';
   const busy = session.busyStage !== null;
 
+  const proving =
+    session.busyStage === 'build-witness' || session.busyStage === 'prove';
+
   return (
-    <section className="card vote-panel">
+    <section
+      className="card vote-panel"
+      aria-labelledby="vote-panel-heading"
+      aria-busy={busy}
+    >
+      <span className="card-stage" aria-hidden="true">04 / Private ballot</span>
       <div className="card__head">
         <div>
           <p className="eyebrow">
             {proposal ? `Proposal ${proposal.id.slice(0, 10)}… · ${proposal.status}` : 'No proposal'}
           </p>
-          <h2>Private ballot</h2>
+          <h2 id="vote-panel-heading">Private ballot</h2>
         </div>
         <span className={`pill ${ready ? 'pill--active' : ''}`}>
           {ready ? 'Ready to prove' : 'Waiting'}
@@ -33,6 +41,9 @@ export function VotePanel({ session }: { session: Session }) {
         Choose a demo credential, select Yes / No / Abstain, then generate a ZK proof that you are an
         approved member without revealing which member you are.
       </p>
+      {!ready && session.wallet.phase !== 'connected' ? (
+        <p className="wallet-help">Connect a wallet before generating a proof.</p>
+      ) : null}
 
       <label>
         Demo voter credential
@@ -79,9 +90,7 @@ export function VotePanel({ session }: { session: Session }) {
         disabled={!ready || busy}
         onClick={() => void session.castVote(choice)}
       >
-        {session.busyStage === 'build-witness' || session.busyStage === 'prove'
-          ? 'Proving private vote…'
-          : 'Generate private vote proof'}
+        {proving ? 'Proving private vote…' : 'Generate private vote proof'}
       </button>
 
       {!proposal ? (

@@ -39,7 +39,7 @@ export function useWalletSession() {
     try {
       const result = await connectToWallet(
         selectedInstallId,
-        import.meta.env.VITE_NETWORK_ID ?? 'preprod',
+        import.meta.env.VITE_NETWORK_ID ?? 'preview',
       );
       const nextProviders = await buildBrowserProviders(result.api, result.networkId);
       const wallet = wallets.find((candidate) => candidate.installId === selectedInstallId) ?? null;

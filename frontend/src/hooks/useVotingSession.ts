@@ -111,6 +111,9 @@ export function useVotingSession() {
   const deploy = useCallback(async () => {
     await withBusy('deploy', async () => {
       setContractPhase('deploying');
+      setNotice('Deploying… approve the 1AM/Lace popup if it appears. Proving can take 30–90s.');
+      // Always use a fresh client for deploy so HMR / prior failed attempts cannot stick.
+      clientRef.current = null;
       const client = ensureClient();
       const result = await client.deploy();
       saveStoredContract(result.contractAddress);

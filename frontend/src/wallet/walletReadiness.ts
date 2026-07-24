@@ -7,7 +7,7 @@ import {
   isWalletRateLimitError,
 } from './walletHealth';
 
-/** Any strictly positive DUST is enough to attempt a Preprod fee payment. */
+/** Any strictly positive DUST is enough to attempt a Preview fee payment. */
 const MIN_DUST_FOR_TX = 1n;
 
 /** How long a successful dust read stays "fresh" before we ask the wallet again. */
@@ -179,7 +179,7 @@ export async function loadWalletReadiness(
     } else if (balance === 0n) {
       warning =
         cap > 0n
-          ? `Wallet reports DUST=0 to the DApp (cap=${formatDust(cap)}). If the wallet UI shows tDUST: disconnect, confirm Preprod + local proof server (http://localhost:6300), reconnect, then Refresh wallet.`
+          ? `Wallet reports DUST=0 to the DApp (cap=${formatDust(cap)}). If the wallet UI shows tDUST: disconnect, confirm Preview + local proof server (http://localhost:6300), reconnect, then Refresh wallet.`
           : 'DUST balance is 0. In your wallet: Generate tDUST after funding tNIGHT, wait for accrual, then Refresh wallet.';
     }
 
@@ -228,7 +228,7 @@ export async function loadWalletReadiness(
       dustUnknown: previous?.dustUnknown ?? true,
       ready: false,
       warning: dustSyncIssue
-        ? 'Lace DUST sync looks broken on this wallet (known preprod bug). Update Lace, or create a fresh preprod wallet and let it fully sync.'
+        ? 'Lace DUST sync looks broken on this wallet (known preview bug). Update Lace, or create a fresh preview wallet and let it fully sync.'
         : `Could not read DUST balance: ${message}`,
       dustFetchedAt: previous?.dustFetchedAt,
     };
@@ -241,16 +241,16 @@ export function describeLaceTxError(error: unknown, step: 'balance' | 'submit' |
   if (customCode === '182') {
     return new Error(
       step === 'deploy'
-        ? 'Preprod rejected the deploy (error 182 — transaction intent expired or was reused). ' +
+        ? 'Preview rejected the deploy (error 182 — transaction intent expired or was reused). ' +
             'Click Deploy again and approve in 1AM immediately when the popup opens. ' +
             'Close other 1AM tabs, check your system clock, then Disconnect → Connect if it persists.'
-        : 'Preprod rejected the transaction (error 182 — intent expired or duplicate). ' +
+        : 'Preview rejected the transaction (error 182 — intent expired or duplicate). ' +
             'Retry and approve in the wallet right away; avoid double-clicking Submit.',
     );
   }
   if (customCode === '170') {
     return new Error(
-      'Preprod rejected the fee/DUST proof (error 170). Reload 1AM, wait ~30s, Disconnect → Connect, then retry. ' +
+      'Preview rejected the fee/DUST proof (error 170). Reload 1AM, wait ~30s, Disconnect → Connect, then retry. ' +
         'Fees are sponsored on 1AM — this is usually a stale wallet session, not low DUST.',
     );
   }
@@ -329,8 +329,8 @@ export function describeLaceTxError(error: unknown, step: 'balance' | 'submit' |
     if (/unreachable/i.test(error.message) || error.name === 'RuntimeError') {
       return new Error(
         step === 'balance'
-          ? 'Lace crashed while paying fees (DUST). This is a known preprod wallet bug. Update Lace to the latest version, use a fresh preprod wallet, fund tNIGHT, and wait until DUST is fully synced before retrying.'
-          : 'Lace crashed while submitting the transaction. Update Lace or try a fresh preprod wallet.',
+          ? 'Lace crashed while paying fees (DUST). This is a known preview wallet bug. Update Lace to the latest version, use a fresh preview wallet, fund tNIGHT, and wait until DUST is fully synced before retrying.'
+          : 'Lace crashed while submitting the transaction. Update Lace or try a fresh preview wallet.',
       );
     }
     if (error.message.trim()) return error;

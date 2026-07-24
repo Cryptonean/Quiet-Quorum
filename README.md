@@ -19,9 +19,6 @@ This repository implements the Level 4 Core MVP:
 
 Still owned by the operator before submission packaging:
 
-- Live Preview contract address
-- Hosted demo URL (Netlify/Vercel)
-- Product X (Twitter) profile link
 - Demo video link
 
 ## Repository layout
@@ -125,10 +122,9 @@ VITE_NETWORK_ID=preview
 
 | Artifact | Value |
 |---|---|
-| Preview contract address | _pending deploy_ |
-| Live demo | _pending Netlify/Vercel publish_ |
+| Preview contract address | `40ef8f3376c5f077867770a40101a75b3f71084cfffd18514538a993ad828d8d` |
 | CI | `.github/workflows/ci.yml` |
-| Product X profile | _pending_ |
+| Product X profile | [@QuietQuorum](https://x.com/QuietQuorum) |
 | Demo video | _pending_ |
 
 

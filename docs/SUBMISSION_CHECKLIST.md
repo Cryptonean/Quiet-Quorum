@@ -13,9 +13,9 @@
 - [x] Lace/1AM connect/disconnect UI
 - [x] Loading / error / recovery states
 - [x] Privacy panel + README privacy model
-- [ ] Preview contract address recorded in README
+- [x] Preview contract address recorded in README
 - [ ] Hosted demo URL recorded in README
-- [ ] Product X profile linked in README
+- [x] Product X profile linked in README
 - [ ] Demo video linked in README / submission form
 
 ## Privacy honesty

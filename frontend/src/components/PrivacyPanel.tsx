@@ -1,6 +1,6 @@
 export function PrivacyPanel() {
   return (
-    <section className="card">
+    <section className="card privacy-panel">
       <p className="eyebrow">Privacy boundary</p>
       <h2>What observers learn</h2>
       <ul>

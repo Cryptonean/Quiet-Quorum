@@ -4,7 +4,7 @@ type Session = ReturnType<typeof useVotingSession>;
 
 export function ProposalPanel({ session }: { session: Session }) {
   return (
-    <section className="card">
+    <section className="card proposal-panel">
       <p className="eyebrow">Proposals</p>
       <h2>On-chain governance queue</h2>
       {session.proposals.length === 0 ? (

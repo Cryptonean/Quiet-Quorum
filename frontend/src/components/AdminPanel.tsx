@@ -13,7 +13,7 @@ export function AdminPanel({ session }: { session: Session }) {
   const ready = session.contractPhase === 'ready';
 
   return (
-    <section className="card">
+    <section className="card admin-panel">
       <p className="eyebrow">Administrator</p>
       <h2>Deploy and govern</h2>
       <p>

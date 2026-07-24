@@ -10,7 +10,7 @@ export function TallyPanel({ session }: { session: Session }) {
     : null;
 
   return (
-    <section className="card">
+    <section className="card tally-panel">
       <p className="eyebrow">Public result</p>
       <h2>Running tally</h2>
       {proposal ? (

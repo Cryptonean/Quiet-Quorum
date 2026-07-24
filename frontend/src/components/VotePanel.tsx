@@ -16,7 +16,7 @@ export function VotePanel({ session }: { session: Session }) {
   const busy = session.busyStage !== null;
 
   return (
-    <section className="card card--wide">
+    <section className="card vote-panel">
       <div className="card__head">
         <div>
           <p className="eyebrow">

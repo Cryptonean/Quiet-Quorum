@@ -131,12 +131,7 @@ VITE_NETWORK_ID=preview
 | Product X profile | _pending_ |
 | Demo video | _pending_ |
 
-## Documentation
 
-- [docs/AGENT_BUILD_BRIEF.md](docs/AGENT_BUILD_BRIEF.md)
-- [docs/DESIGN.md](docs/DESIGN.md)
-- [docs/FLOWS.md](docs/FLOWS.md)
-- [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md)
 
 ## Success narrative
 

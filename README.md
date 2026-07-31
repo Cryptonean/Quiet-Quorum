@@ -125,7 +125,7 @@ VITE_NETWORK_ID=preview
 | Preview contract address | `40ef8f3376c5f077867770a40101a75b3f71084cfffd18514538a993ad828d8d` |
 | CI | `.github/workflows/ci.yml` |
 | Product X profile | [@QuietQuorum](https://x.com/QuietQuorum) |
-| Demo video | _pending_ |
+| Demo video | https://drive.google.com/file/d/15hAAR9ZoMevzH8thn772YUoG6Y_1F6jK/view?usp=sharing |
 
 
 
